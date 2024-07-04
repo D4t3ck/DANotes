@@ -24,13 +24,14 @@ export class NoteListService {
     this.unsubTrash = this.subTrashList();
   }
 
-  async addNote(item: {}){
-    await addDoc(this.getNotesRef(), item).catch(
-      (err) => { console.error(err) }
-    ).then(
-      (docRef) => {console.log("Document written with ID: ", docRef?.id);}
-    )
-    
+  async addNote(item: Note) {
+    await addDoc(this.getNotesRef(), item)
+      .catch((err) => {
+        console.error(err);
+      })
+      .then((docRef) => {
+        console.log('Document written with ID: ', docRef?.id);
+      });
   }
 
   ngOnDestroy() {
@@ -49,8 +50,6 @@ export class NoteListService {
 
   subNotesRef() {
     return onSnapshot(this.getNotesRef(), (snapshot) => {
-      
-      
       this.normalNotes = [];
       snapshot.forEach((doc) => {
         this.normalNotes.push(this.setNoteObject(doc.data(), doc.id));
