@@ -7,6 +7,10 @@ import {
   onSnapshot,
   deleteDoc,
   updateDoc,
+  where,
+  query,
+  orderBy,
+  limit,
 } from '@angular/fire/firestore';
 import { Note } from '../interfaces/note.interface';
 
@@ -18,11 +22,11 @@ export class NoteListService {
   trashNotes: Note[] = [];
   normalNotes: Note[] = [];
 
-  unsubTrash: () => void;
-  unsubNotes: () => void;
+  unsubTrash;
+  unsubNotes;
 
   constructor() {
-    this.unsubNotes = this.subNotesRef();
+    this.unsubNotes = this.subNotesList();
     this.unsubTrash = this.subTrashList();
   }
 
@@ -84,8 +88,11 @@ export class NoteListService {
     });
   }
 
-  subNotesRef() {
-    return onSnapshot(this.getNotesRef(), (snapshot) => {
+
+
+  subNotesList() {
+    const q = query(this.getNotesRef(), orderBy("state"), limit(100));
+    return onSnapshot(q, (snapshot) => {
       this.normalNotes = [];
       snapshot.forEach((doc) => {
         this.normalNotes.push(this.setNoteObject(doc.data(), doc.id));
