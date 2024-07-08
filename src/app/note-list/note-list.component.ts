@@ -20,6 +20,9 @@ export class NoteListComponent {
   constructor(private noteService: NoteListService) {}
 
   getList(): Note[] {
+    if (this.status === 'trash') {
+      return this.noteService.trashNotes;
+    }
     return this.noteService.normalNotes;
   }
 
