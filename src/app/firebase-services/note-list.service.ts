@@ -21,12 +21,15 @@ export class NoteListService {
   firestore: Firestore = inject(Firestore);
   trashNotes: Note[] = [];
   normalNotes: Note[] = [];
+  normalMarkedNotes: Note[] = [];
 
   unsubTrash;
   unsubNotes;
+  unsubMarkedNotes;
 
   constructor() {
     this.unsubNotes = this.subNotesList();
+    this.unsubMarkedNotes = this.subMarkedNotesList();
     this.unsubTrash = this.subTrashList();
   }
 
@@ -77,6 +80,7 @@ export class NoteListService {
   ngOnDestroy() {
     this.unsubNotes();
     this.unsubTrash();
+    this.unsubMarkedNotes();
   }
 
   subTrashList() {
@@ -88,14 +92,32 @@ export class NoteListService {
     });
   }
 
-
-
   subNotesList() {
-    const q = query(this.getNotesRef(), orderBy("state"), limit(100));
+    const q = query(
+      this.getNotesRef(),
+      where('marked', '==', false),
+      limit(100)
+    );
     return onSnapshot(q, (snapshot) => {
       this.normalNotes = [];
-      snapshot.forEach((doc) => {
-        this.normalNotes.push(this.setNoteObject(doc.data(), doc.id));
+      snapshot.forEach((element) => {
+        this.normalNotes.push(this.setNoteObject(element.data(), element.id));
+      });
+    });
+  }
+
+  subMarkedNotesList() {
+    const q = query(
+      this.getNotesRef(),
+      where('marked', '==', true),
+      limit(100)
+    );
+    return onSnapshot(q, (snapshot) => {
+      this.normalMarkedNotes = [];
+      snapshot.forEach((element) => {
+        this.normalMarkedNotes.push(
+          this.setNoteObject(element.data(), element.id)
+        );
       });
     });
   }
