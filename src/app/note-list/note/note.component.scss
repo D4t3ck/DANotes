@@ -11,6 +11,10 @@
     justify-content: space-between;
     align-items: center;
 
+    /* &:hover .adjustment_btns {
+        top: 0;
+    } */
+
     >h3 {
         font-size: 24px;
         margin: 0;
@@ -71,6 +75,8 @@
     right: 0;
     display: flex;
     justify-content: space-between;
+
+
     
     >div {
         display: flex;

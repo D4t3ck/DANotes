@@ -93,31 +93,32 @@ export class NoteListService {
   }
 
   subNotesList() {
-    const q = query(
-      this.getNotesRef(),
-      where('marked', '==', false),
-      limit(100)
-    );
+    const q = query(this.getNotesRef(), where("marked", "==", false), limit(100));
     return onSnapshot(q, (snapshot) => {
       this.normalNotes = [];
       snapshot.forEach((element) => {
         this.normalNotes.push(this.setNoteObject(element.data(), element.id));
       });
+      // snapshot.docChanges().forEach((change) => {
+      //   if (change.type === "added") {
+      //       console.log("New note: ", change.doc.data());
+      //   }
+      //   if (change.type === "modified") {
+      //       console.log("Modified note: ", change.doc.data());
+      //   }
+      //   if (change.type === "removed") {
+      //       console.log("Removed note: ", change.doc.data());
+      //   }
+      // });
     });
   }
 
   subMarkedNotesList() {
-    const q = query(
-      this.getNotesRef(),
-      where('marked', '==', true),
-      limit(100)
-    );
+    const q = query(this.getNotesRef(), where("marked", "==", true), limit(100));
     return onSnapshot(q, (snapshot) => {
       this.normalMarkedNotes = [];
       snapshot.forEach((element) => {
-        this.normalMarkedNotes.push(
-          this.setNoteObject(element.data(), element.id)
-        );
+        this.normalMarkedNotes.push(this.setNoteObject(element.data(), element.id));
       });
     });
   }
